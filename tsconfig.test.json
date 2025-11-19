@@ -10,8 +10,8 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "paths": {
-      "@grom.js/tgx/jsx-runtime": ["./src/jsx_runtime.ts"],
-      "@grom.js/tgx/jsx-dev-runtime": ["./src/jsx_runtime.ts"]
+      "@grom.js/tgx/jsx-runtime": ["src/jsx-runtime.ts"],
+      "@grom.js/tgx/jsx-dev-runtime": ["src/jsx-runtime.ts"]
     },
     "typeRoots": ["node_modules/@types"],
     "types": ["node"],

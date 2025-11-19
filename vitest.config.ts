@@ -8,8 +8,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   resolve: {
     alias: {
-      '@grom.js/tgx/jsx-runtime': join(__dirname, 'src/jsx_runtime.ts'),
-      '@grom.js/tgx/jsx-dev-runtime': join(__dirname, 'src/jsx_runtime.ts'),
+      '@grom.js/tgx/jsx-runtime': join(__dirname, 'src/jsx-runtime.ts'),
+      '@grom.js/tgx/jsx-dev-runtime': join(__dirname, 'src/jsx-runtime.ts'),
     },
   },
   esbuild: {
