@@ -13,15 +13,15 @@ function jsx(type: any, props: any, key: any): any {
 export {
   Fragment,
   jsx,
-  jsx as jsxs,
   jsx as jsxDEV,
+  jsx as jsxs,
 }
 
 export namespace JSX {
   export type Element = TgxElement
-  export type ElementType =
-    | keyof NativeElements
-    | FunctionComponent
+  export type ElementType
+    = | keyof NativeElements
+      | FunctionComponent
   export interface ElementAttributesProperty { props: {} }
   export interface ElementChildrenAttribute { children: {} }
   export interface IntrinsicElements extends NativeElements {}

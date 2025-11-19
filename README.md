@@ -1,19 +1,15 @@
 ![tgx](tgx.png)
 
-Implementation of `jsx-runtime` to create Telegram messages using JSX.
+[JSX](https://facebook.github.io/jsx/) runtime for composing Telegram messages.
 
 ## Installation
 
 ```sh
-deno add jsr:@evermake/tgx
-# or
-npx jsr add @evermake/tgx
-# or
-pnpm dlx jsr add @evermake/tgx
-# or
-yarn dlx jsr add @evermake/tgx
-# or
-bunx jsr add @evermake/tgx
+# Using npm
+npm install @grom.js/tgx
+
+# Using jsr
+deno add jsr:@grom/tgx
 ```
 
 Then in your `tsconfig.json`:
@@ -22,7 +18,7 @@ Then in your `tsconfig.json`:
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "@evermake/tgx",
+    "jsxImportSource": "@grom.js/tgx" // "@grom/tgx" for jsr
     // ...
   }
 }
@@ -33,12 +29,12 @@ Then in your `tsconfig.json`:
 Usage with [grammY](https://grammy.dev):
 
 ```tsx
-import { html } from '@evermake/tgx'
+import { html } from '@grom.js/tgx'
 import { Bot } from 'grammy'
 
-const Greeting = (props: { name: string }) => (
-  <>Hello, <b>{props.name}</b>!</>
-)
+function Greeting(props: { name: string }) {
+  return <>Hello, <b>{props.name}</b>!</>
+}
 
 const bot = new Bot(/* TOKEN */)
 

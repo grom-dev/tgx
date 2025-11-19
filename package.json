@@ -1,0 +1,59 @@
+{
+  "name": "@grom.js/tgx",
+  "type": "module",
+  "version": "0.4.0",
+  "packageManager": "pnpm@10.22.0",
+  "description": "JSX runtime for composing Telegram messages",
+  "author": {
+    "name": "Vladislav Deryabkin",
+    "url": "https://evermake.me"
+  },
+  "license": "MIT",
+  "keywords": [
+    "jsx",
+    "telegram"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts"
+    },
+    "./jsx-runtime": {
+      "types": "./dist/jsx-runtime.d.ts",
+      "import": "./dist/jsx-runtime.js"
+    },
+    "./jsx-dev-runtime": {
+      "types": "./dist/jsx-dev-runtime.d.ts",
+      "import": "./dist/jsx-dev-runtime.js"
+    }
+  },
+  "files": [
+    "./dist/"
+  ],
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "build": "rm -rf ./dist/ && tsc --project ./tsconfig.lib.json",
+    "typecheck": "tsc --build --noEmit",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "vitest --config ./vitest.config.ts",
+    "test:coverage": "vitest run --config ./vitest.config.ts --coverage",
+    "deps": "taze --interactive --write --include-locked",
+    "release": "bumpp"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "6.2.0",
+    "@types/node": "22.19.1",
+    "@vitest/coverage-v8": "4.0.10",
+    "bumpp": "10.3.1",
+    "eslint": "9.39.1",
+    "eslint-plugin-format": "1.0.2",
+    "taze": "19.9.0",
+    "vitest": "4.0.10"
+  }
+}

@@ -1,4 +1,4 @@
-import type { StringWithSuggestions, PrismLanguage } from './_utils/types.ts'
+import type { PrismLanguage, StringWithSuggestions } from './_utils/types.ts'
 
 export interface NativeElements {
   /**
@@ -85,14 +85,14 @@ export interface NativeElements {
   }>
 }
 
-export type TgxNode =
-  | TgxNode[]
-  | TgxElement
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
+export type TgxNode
+  = | TgxNode[]
+    | TgxElement
+    | string
+    | number
+    | boolean
+    | null
+    | undefined
 
 export type PropsWithChildren<P = {}> = {
   children?: TgxNode
@@ -100,10 +100,10 @@ export type PropsWithChildren<P = {}> = {
 
 export type FunctionComponent = (props: any) => TgxElement
 
-export type TgxElement =
-  | TgxPlainValueElement
-  | TgxFragmentElement
-  | TgxTextElement
+export type TgxElement
+  = | TgxPlainValueElement
+    | TgxFragmentElement
+    | TgxTextElement
 
 export interface TgxPlainValueElement {
   type: 'plain'
@@ -121,14 +121,14 @@ export interface TgxTextElement {
   subelements: TgxElement[]
 }
 
-export type TextEntity =
-  | { type: 'bold' }
-  | { type: 'italic' }
-  | { type: 'underline' }
-  | { type: 'strikethrough' }
-  | { type: 'spoiler' }
-  | { type: 'link', url: string }
-  | { type: 'custom-emoji', id: string, alt: string }
-  | { type: 'code' }
-  | { type: 'codeblock', language?: string }
-  | { type: 'blockquote', expandable: boolean }
+export type TextEntity
+  = | { type: 'bold' }
+    | { type: 'italic' }
+    | { type: 'underline' }
+    | { type: 'strikethrough' }
+    | { type: 'spoiler' }
+    | { type: 'link', url: string }
+    | { type: 'custom-emoji', id: string, alt: string }
+    | { type: 'code' }
+    | { type: 'codeblock', language?: string }
+    | { type: 'blockquote', expandable: boolean }

@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo",
+    "target": "esnext",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@grom.js/tgx",
+    "lib": ["ESNext"],
+    "moduleDetection": "force",
+    "baseUrl": ".",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "paths": {
+      "@grom.js/tgx/jsx-runtime": ["./src/jsx_runtime.ts"],
+      "@grom.js/tgx/jsx-dev-runtime": ["./src/jsx_runtime.ts"]
+    },
+    "typeRoots": ["node_modules/@types"],
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "allowJs": false,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "./test/**/*.ts",
+    "./test/**/*.tsx",
+    "./vitest.config.ts"
+  ]
+}

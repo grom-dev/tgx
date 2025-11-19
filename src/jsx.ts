@@ -9,14 +9,18 @@ import type {
 export function render<T extends keyof NativeElements>(
   type: T,
   props: NativeElements[T],
-  children: TgxNode
+  children: TgxNode,
 ): TgxElement
 export function render(
   type: FunctionComponent,
   props: any,
-  children: TgxNode
+  children: TgxNode,
 ): TgxElement
-export function render(type: unknown, props: any, children: TgxNode) {
+export function render(
+  type: unknown,
+  props: any,
+  children: TgxNode,
+): TgxElement {
   if (typeof type === 'string' && isNativeTag(type)) {
     return renderNativeElement({
       tag: type,
