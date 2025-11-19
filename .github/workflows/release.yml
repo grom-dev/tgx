@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish-npm:
-    name: Build and Publish to npm
+    name: Publish to npm
     runs-on: ubuntu-latest
     permissions:
       contents: read
