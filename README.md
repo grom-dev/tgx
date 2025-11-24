@@ -1,5 +1,8 @@
 ![tgx](tgx.png)
 
+[![jsr](https://jsr.io/badges/@grom/tgx)](https://jsr.io/@grom/tgx)
+[![npm](https://img.shields.io/npm/v/%40grom.js%2Ftgx?style=flat&logo=npm&logoColor=%23CB0200&labelColor=%23fff&color=%23333)](https://www.npmjs.com/package/@grom.js/tgx)
+
 [JSX](https://facebook.github.io/jsx/) runtime for composing Telegram messages.
 
 ## Installation
