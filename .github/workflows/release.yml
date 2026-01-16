@@ -40,3 +40,16 @@ jobs:
         with:
           fetch-depth: 0
       - run: npx jsr publish
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: antfu/changelogithub@v0.13
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
