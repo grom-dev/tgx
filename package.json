@@ -1,7 +1,7 @@
 {
   "name": "@grom.js/tgx",
   "type": "module",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "packageManager": "pnpm@10.22.0",
   "description": "JSX runtime for composing Telegram messages",
   "author": {
