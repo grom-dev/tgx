@@ -1,7 +1,7 @@
 ![tgx](tgx.png)
 
-[![jsr](https://jsr.io/badges/@grom/tgx)](https://jsr.io/@grom/tgx)
-[![npm](https://img.shields.io/npm/v/%40grom.js%2Ftgx?style=flat&logo=npm&logoColor=%23CB0200&labelColor=%23fff&color=%23333)](https://www.npmjs.com/package/@grom.js/tgx)
+[![jsr](https://img.shields.io/jsr/v/%40grom/tgx?style=flat&logo=jsr&logoColor=%231B3646&logoSize=auto&label=%C2%A0&labelColor=%23F3E051&color=%231B3646)](https://jsr.io/@grom/tgx)
+[![npm](https://img.shields.io/npm/v/%40grom.js%2Ftgx?style=flat&logo=npm&logoColor=%23BB443E&logoSize=auto&label=%C2%A0&labelColor=%23fff&color=%23BB443E)](https://www.npmjs.com/package/@grom.js/tgx)
 
 [JSX](https://facebook.github.io/jsx/) runtime for composing Telegram messages.
 
