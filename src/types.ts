@@ -1,4 +1,4 @@
-export interface NativeElements {
+export interface IntrinsicElements {
   /**
    * Bold text.
    */
@@ -486,24 +486,24 @@ export type PropsWithChildren<P = {}> = {
   children?: TgxNode
 } & P
 
-export type FunctionComponent = (props: any) => TgxElement
+export type Component = (props: any) => TgxElement
 
 export type TgxElement
-  = | TgxPlainValueElement
-    | TgxFragmentElement
-    | TgxTextElement
+  = | TgxElementPlain
+    | TgxElementFragment
+    | TgxElementText
 
-export interface TgxPlainValueElement {
+export interface TgxElementPlain {
   type: 'plain'
   value: string | number | boolean | null | undefined
 }
 
-export interface TgxFragmentElement {
+export interface TgxElementFragment {
   type: 'fragment'
   subelements: TgxElement[]
 }
 
-export interface TgxTextElement {
+export interface TgxElementText {
   type: 'text'
   entity: TextEntity
   subelements: TgxElement[]

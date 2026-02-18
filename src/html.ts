@@ -1,4 +1,4 @@
-import type { TgxElement, TgxPlainValueElement, TgxTextElement } from './types.ts'
+import type { TgxElement, TgxElementPlain, TgxElementText } from './types.ts'
 
 /**
  * Converts {@link TgxElement} to an HTML string formatted for Telegram's
@@ -17,13 +17,13 @@ export function html(tgx: TgxElement | TgxElement[]): string {
     .join('')
 }
 
-function htmlTgxPlainElement({ value }: TgxPlainValueElement): string {
+function htmlTgxPlainElement({ value }: TgxElementPlain): string {
   if (value == null || typeof value === 'boolean')
     return ''
   return sanitize(String(value))
 }
 
-function htmlTgxTextElement(el: TgxTextElement): string {
+function htmlTgxTextElement(el: TgxElementText): string {
   switch (el.entity.type) {
     case 'bold': return `<b>${html(el.subelements)}</b>`
     case 'italic': return `<i>${html(el.subelements)}</i>`

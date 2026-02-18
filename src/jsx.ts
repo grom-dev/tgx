@@ -1,28 +1,28 @@
 import type {
-  FunctionComponent,
-  NativeElements,
+  Component,
+  IntrinsicElements,
   TgxElement,
-  TgxFragmentElement,
+  TgxElementFragment,
   TgxNode,
 } from './types.ts'
 
-export function render<T extends keyof NativeElements>(
+export function createElement<T extends keyof IntrinsicElements>(
   type: T,
-  props: NativeElements[T],
+  props: IntrinsicElements[T],
   children: TgxNode,
 ): TgxElement
-export function render(
-  type: FunctionComponent,
+export function createElement(
+  type: Component,
   props: any,
   children: TgxNode,
 ): TgxElement
-export function render(
+export function createElement(
   type: unknown,
   props: any,
   children: TgxNode,
 ): TgxElement {
   if (typeof type === 'string' && isNativeTag(type)) {
-    return renderNativeElement({
+    return createElementIntrinsic({
       tag: type,
       props: { ...props, children },
     })
@@ -34,7 +34,7 @@ export function render(
   throw new Error(`Invalid JSX component: ${type}.`)
 }
 
-export function Fragment(props?: { children?: TgxNode }): TgxFragmentElement {
+export function Fragment(props?: { children?: TgxNode }): TgxElementFragment {
   return {
     type: 'fragment',
     subelements: elementsFromNode(props?.children ?? []),
@@ -58,7 +58,7 @@ function elementsFromNode(node: TgxNode): TgxElement[] {
   return [node]
 }
 
-function isNativeTag(tag: string): tag is keyof NativeElements {
+function isNativeTag(tag: string): tag is keyof IntrinsicElements {
   return ([
     'b',
     'i',
@@ -73,13 +73,13 @@ function isNativeTag(tag: string): tag is keyof NativeElements {
   ]).includes(tag)
 }
 
-function renderNativeElement(
+function createElementIntrinsic(
   options: {
-    [K in keyof NativeElements]: {
+    [K in keyof IntrinsicElements]: {
       tag: K
-      props: NativeElements[K]
+      props: IntrinsicElements[K]
     }
-  }[keyof NativeElements],
+  }[keyof IntrinsicElements],
 ): TgxElement {
   switch (options.tag) {
     case 'b':
