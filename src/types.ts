@@ -482,9 +482,7 @@ export type TgxNode
     | null
     | undefined
 
-export type PropsWithChildren<P = {}> = {
-  children?: TgxNode
-} & P
+export type PropsWithChildren<P = {}> = P & { children?: TgxNode }
 
 export type Component = (props: any) => TgxElement
 
