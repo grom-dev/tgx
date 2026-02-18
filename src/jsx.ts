@@ -21,7 +21,7 @@ export function createElement(
   props: any,
   children: TgxNode,
 ): TgxElement {
-  if (typeof type === 'string' && isNativeTag(type)) {
+  if (typeof type === 'string' && isIntrinsicElement(type)) {
     return createElementIntrinsic({
       tag: type,
       props: { ...props, children },
@@ -58,19 +58,21 @@ function elementsFromNode(node: TgxNode): TgxElement[] {
   return [node]
 }
 
-function isNativeTag(tag: string): tag is keyof IntrinsicElements {
-  return ([
-    'b',
-    'i',
-    'u',
-    's',
-    'spoiler',
-    'a',
-    'emoji',
-    'code',
-    'codeblock',
-    'blockquote',
-  ]).includes(tag)
+const INTRINSIC_ELEMENTS = new Set([
+  'b',
+  'i',
+  'u',
+  's',
+  'spoiler',
+  'a',
+  'emoji',
+  'code',
+  'codeblock',
+  'blockquote',
+])
+
+export function isIntrinsicElement(name: string): name is keyof IntrinsicElements {
+  return INTRINSIC_ELEMENTS.has(name as keyof IntrinsicElements)
 }
 
 function createElementIntrinsic(
