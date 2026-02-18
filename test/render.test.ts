@@ -1,4 +1,4 @@
-import type { TgxElement } from '../src/types.ts'
+import type { TextEntity, TgxElement } from '../src/types.ts'
 import { describe, expect, it } from 'vitest'
 import { renderHtml } from '../src/render.ts'
 
@@ -10,8 +10,8 @@ function fragment(...subelements: TgxElement[]): TgxElement {
   return { type: 'fragment', subelements }
 }
 
-function text(entity: TgxElement & { type: 'text' } extends { entity: infer E } ? E : never, ...subelements: TgxElement[]): TgxElement {
-  return { type: 'text', entity, subelements } as TgxElement
+function text(entity: TextEntity, ...subelements: TgxElement[]): TgxElement {
+  return { type: 'text', entity, subelements }
 }
 
 describe('renderHtml', () => {
