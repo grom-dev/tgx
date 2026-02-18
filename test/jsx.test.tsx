@@ -1,7 +1,7 @@
-import { describe, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
-describe('jsx', (test) => {
-  test('renders fragments', () => {
+describe('jsx', () => {
+  it('should transform fragments', () => {
     // deno-lint-ignore jsx-no-useless-fragment
     expect(<></>).toEqual({
       type: 'fragment',
@@ -14,7 +14,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders plain elements', () => {
+  it('should transform plain elements', () => {
     expect(
       <>
         Some text 😄
@@ -39,7 +39,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <b> tag', () => {
+  it('should transform <b>', () => {
     expect(<b></b>).toEqual({
       type: 'text',
       entity: { type: 'bold' },
@@ -53,7 +53,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <i> tag', () => {
+  it('should transform <i>', () => {
     expect(<i></i>).toEqual({
       type: 'text',
       entity: { type: 'italic' },
@@ -67,7 +67,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <u> tag', () => {
+  it('should transform <u>', () => {
     expect(<u></u>).toEqual({
       type: 'text',
       entity: { type: 'underline' },
@@ -80,7 +80,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <s> tag', () => {
+  it('should transform <s>', () => {
     expect(<s></s>).toEqual({
       type: 'text',
       entity: { type: 'strikethrough' },
@@ -93,7 +93,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <spoiler> tag', () => {
+  it('should transform <spoiler>', () => {
     expect(<spoiler></spoiler>).toEqual({
       type: 'text',
       entity: { type: 'spoiler' },
@@ -106,7 +106,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <code> tag', () => {
+  it('should transform <code>', () => {
     expect(<code></code>).toEqual({
       type: 'text',
       entity: { type: 'code' },
@@ -119,7 +119,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <a> tag', () => {
+  it('should transform <a>', () => {
     expect(<a href=""></a>).toEqual({
       type: 'text',
       entity: { type: 'link', url: '' },
@@ -133,7 +133,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <emoji> tag', () => {
+  it('should transform <emoji>', () => {
     expect(<emoji id="12345" alt="❤️" />).toEqual({
       type: 'text',
       entity: { type: 'custom-emoji', id: '12345', alt: '❤️' },
@@ -141,7 +141,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <codeblock> tag', () => {
+  it('should transform <codeblock>', () => {
     expect(<codeblock></codeblock>).toEqual({
       type: 'text',
       entity: {
@@ -170,7 +170,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders <blockquote> tag', () => {
+  it('should transform <blockquote>', () => {
     expect(<blockquote></blockquote>).toEqual({
       type: 'text',
       entity: { type: 'blockquote', expandable: false },
@@ -188,7 +188,7 @@ describe('jsx', (test) => {
     })
   })
 
-  test('renders components', () => {
+  it('should transform components', () => {
     const Repeat = (props: any) => (
       <>{Array.from({ length: props.n }).fill(props.children)}</>
     )
