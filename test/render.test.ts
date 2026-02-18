@@ -24,7 +24,7 @@ describe('renderHtml', () => {
     ['a number', plain(42), '42'],
     ['zero', plain(0), '0'],
     ['a float', plain(3.14), '3.14'],
-  ] as const)('renders plain element (%s)', (_label, input, expected) => {
+  ] as const)('should render plain element (%s)', (_label, input, expected) => {
     expect(renderHtml(input as TgxElement)).toBe(expected)
   })
 
@@ -34,7 +34,7 @@ describe('renderHtml', () => {
     ['>', '&gt;'],
     ['<b>&', '&lt;b&gt;&amp;'],
     ['no special chars', 'no special chars'],
-  ])('sanitizes plain text %j → %j', (input, expected) => {
+  ])('should sanitize plain text %j → %j', (input, expected) => {
     expect(renderHtml(plain(input))).toBe(expected)
   })
 
@@ -45,34 +45,34 @@ describe('renderHtml', () => {
     ['strikethrough', { type: 'strikethrough' as const }, '<s>x</s>'],
     ['spoiler', { type: 'spoiler' as const }, '<tg-spoiler>x</tg-spoiler>'],
     ['code', { type: 'code' as const }, '<code>x</code>'],
-  ])('wraps text entity "%s" in correct HTML tag', (_label, entity, expected) => {
+  ])('should wrap text entity "%s" in correct HTML tag', (_label, entity, expected) => {
     expect(renderHtml(text(entity, plain('x')))).toBe(expected)
   })
 
   it.each([
     ['link with url', { type: 'link' as const, url: 'https://example.com' }, '<a href="https://example.com">x</a>'],
     ['link with empty url', { type: 'link' as const, url: '' }, '<a href="">x</a>'],
-  ])('renders %s', (_label, entity, expected) => {
+  ])('should render %s', (_label, entity, expected) => {
     expect(renderHtml(text(entity, plain('x')))).toBe(expected)
   })
 
   it.each([
     ['with id and alt', '12345', '❤️', '<tg-emoji emoji-id="12345">❤️</tg-emoji>'],
-  ])('renders custom-emoji %s', (_label, id, alt, expected) => {
+  ])('should render custom-emoji %s', (_label, id, alt, expected) => {
     expect(renderHtml(text({ type: 'custom-emoji', id, alt }))).toBe(expected)
   })
 
   it.each([
     ['without language', undefined, '<pre>code</pre>'],
     ['with language', 'python', '<pre><code class="language-python">code</code></pre>'],
-  ])('renders codeblock %s', (_label, language, expected) => {
+  ])('should render codeblock %s', (_label, language, expected) => {
     expect(renderHtml(text({ type: 'codeblock', language }, plain('code')))).toBe(expected)
   })
 
   it.each([
     ['non-expandable', false, '<blockquote>q</blockquote>'],
     ['expandable', true, '<blockquote expandable>q</blockquote>'],
-  ])('renders blockquote (%s)', (_label, expandable, expected) => {
+  ])('should render blockquote (%s)', (_label, expandable, expected) => {
     expect(renderHtml(text({ type: 'blockquote', expandable }, plain('q')))).toBe(expected)
   })
 
@@ -80,7 +80,7 @@ describe('renderHtml', () => {
     ['empty fragment', fragment(), ''],
     ['fragment with one child', fragment(plain('a')), 'a'],
     ['fragment with multiple children', fragment(plain('a'), plain('b')), 'ab'],
-  ])('renders %s', (_label, input, expected) => {
+  ])('should render %s', (_label, input, expected) => {
     expect(renderHtml(input)).toBe(expected)
   })
 
@@ -88,7 +88,7 @@ describe('renderHtml', () => {
     ['single-element array', [plain('a')], 'a'],
     ['multi-element array', [plain('a'), plain('b')], 'ab'],
     ['mixed array', [plain('hi '), text({ type: 'bold' }, plain('world'))], 'hi <b>world</b>'],
-  ])('accepts %s as input', (_label, input, expected) => {
+  ])('should accept %s as input', (_label, input, expected) => {
     expect(renderHtml(input as TgxElement[])).toBe(expected)
   })
 
@@ -108,11 +108,11 @@ describe('renderHtml', () => {
       text({ type: 'bold' }, plain('<script>')),
       '<b>&lt;script&gt;</b>',
     ],
-  ])('handles %s', (_label, input, expected) => {
+  ])('should handle %s', (_label, input, expected) => {
     expect(renderHtml(input)).toBe(expected)
   })
 
-  it('throws on unknown element type', () => {
+  it('should throw on unknown element type', () => {
     const bad = { type: 'unknown' } as unknown as TgxElement
     expect(() => renderHtml(bad)).toThrow()
   })
