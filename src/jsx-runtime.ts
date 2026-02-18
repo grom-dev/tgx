@@ -19,9 +19,7 @@ export {
 
 export namespace JSX {
   export type Element = Tgx.TgxElement
-  export type ElementType
-    = | keyof IntrinsicElements
-      | Tgx.Component
+  export type ElementType = keyof IntrinsicElements | Tgx.Component
   export interface ElementAttributesProperty { props: {} }
   export interface ElementChildrenAttribute { children: {} }
   export interface IntrinsicElements extends Tgx.IntrinsicElements {}
