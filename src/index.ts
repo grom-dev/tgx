@@ -1,1 +1,1 @@
-export { html } from './html.ts'
+export { renderHtml } from './render.ts'
