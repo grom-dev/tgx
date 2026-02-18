@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import type { TgxElement } from '../src/types.ts'
+import { describe, expect, it } from 'vitest'
 import { renderHtml } from '../src/render.ts'
 
 function plain(value: string | number | boolean | null | undefined): TgxElement {
