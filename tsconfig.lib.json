@@ -24,7 +24,7 @@
     "emitDeclarationOnly": false,
     "noEmit": false,
     "outDir": "./dist/",
-    "sourceMap": false,
+    "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
