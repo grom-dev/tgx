@@ -29,6 +29,13 @@ function renderTextElement(el: TgxElementText): string {
     case 'link': return `<a href="${el.entity.url}">${renderHtml(el.subelements)}</a>`
 
     case 'custom-emoji': return `<tg-emoji emoji-id="${el.entity.id}">${el.entity.alt}</tg-emoji>`
+
+    case 'date-time': return (
+      el.entity.format
+        ? `<tg-time unix="${el.entity.unix}" format="${el.entity.format}">${renderHtml(el.subelements)}</tg-time>`
+        : `<tg-time unix="${el.entity.unix}">${renderHtml(el.subelements)}</tg-time>`
+    )
+
     case 'code': return `<code>${renderHtml(el.subelements)}</code>`
 
     case 'codeblock': return (

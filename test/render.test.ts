@@ -63,6 +63,16 @@ describe('renderHtml', () => {
   })
 
   it.each([
+    ['without format', 1735689600, undefined, [], '<tg-time unix="1735689600"></tg-time>'],
+    ['with format r', 1735689600, 'r', [], '<tg-time unix="1735689600" format="r"></tg-time>'],
+    ['with format wDT', 1735689600, 'wDT', [], '<tg-time unix="1735689600" format="wDT"></tg-time>'],
+    ['with children', 1735689600, undefined, [plain('January 1, 2025')], '<tg-time unix="1735689600">January 1, 2025</tg-time>'],
+    ['with format and children', 1735689600, 'r', [plain('Jan 1')], '<tg-time unix="1735689600" format="r">Jan 1</tg-time>'],
+  ])('should render date-time %s', (_label, unix, format, subelements, expected) => {
+    expect(renderHtml(text({ type: 'date-time', unix, format }, ...subelements))).toBe(expected)
+  })
+
+  it.each([
     ['without language', undefined, '<pre>code</pre>'],
     ['with language', 'python', '<pre><code class="language-python">code</code></pre>'],
   ])('should render codeblock %s', (_label, language, expected) => {

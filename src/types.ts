@@ -57,6 +57,29 @@ export interface IntrinsicElements {
   }
 
   /**
+   * Date and time.
+   *
+   * Recipients can tap it to add an event to their calendar or set
+   * a quick reminder. It also automatically adapts to each recipient's local
+   * date and time.
+   *
+   * @see https://telegram.org/blog/member-tags-disable-sharing-and-more#time-and-date-formatting
+   */
+  time: PropsWithChildren<{
+    /**
+     * Unix timestamp.
+     */
+    unix: number
+
+    /**
+     * Specifies how the date and time should be formatted.
+     *
+     * @see https://core.telegram.org/bots/api#date-time-entity-formatting
+     */
+    format?: 'r' | `${'w' | ''}${'d' | 'D' | ''}${'t' | 'T' | ''}`
+  }>
+
+  /**
    * Inline fixed-width code.
    */
   code: PropsWithChildren
@@ -515,6 +538,7 @@ export type TextEntity
     | { type: 'spoiler' }
     | { type: 'link', url: string }
     | { type: 'custom-emoji', id: string, alt: string }
+    | { type: 'date-time', unix: number, format?: string }
     | { type: 'code' }
     | { type: 'codeblock', language?: string }
     | { type: 'blockquote', expandable: boolean }

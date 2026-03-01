@@ -141,6 +141,32 @@ describe('jsx', () => {
     })
   })
 
+  it('should transform <time>', () => {
+    expect(<time unix={1735689600} />).toEqual({
+      type: 'text',
+      entity: { type: 'date-time', unix: 1735689600, format: undefined },
+      subelements: [],
+    })
+
+    expect(<time unix={1735689600} format="r" />).toEqual({
+      type: 'text',
+      entity: { type: 'date-time', unix: 1735689600, format: 'r' },
+      subelements: [],
+    })
+
+    expect(<time unix={1735689600} format="wDT" />).toEqual({
+      type: 'text',
+      entity: { type: 'date-time', unix: 1735689600, format: 'wDT' },
+      subelements: [],
+    })
+
+    expect(<time unix={1735689600}>January 1, 2025</time>).toEqual({
+      type: 'text',
+      entity: { type: 'date-time', unix: 1735689600, format: undefined },
+      subelements: [{ type: 'plain', value: 'January 1, 2025' }],
+    })
+  })
+
   it('should transform <codeblock>', () => {
     expect(<codeblock></codeblock>).toEqual({
       type: 'text',

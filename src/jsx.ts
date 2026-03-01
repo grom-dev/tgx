@@ -66,6 +66,7 @@ const INTRINSIC_ELEMENTS = new Set([
   'spoiler',
   'a',
   'emoji',
+  'time',
   'code',
   'codeblock',
   'blockquote',
@@ -125,6 +126,12 @@ function createElementIntrinsic(
         type: 'text',
         entity: { type: 'custom-emoji', id: options.props.id, alt: options.props.alt },
         subelements: [],
+      }
+    case 'time':
+      return {
+        type: 'text',
+        entity: { type: 'date-time', unix: options.props.unix, format: options.props.format },
+        subelements: elementsFromNode(options.props.children ?? []),
       }
     case 'code':
       return {
