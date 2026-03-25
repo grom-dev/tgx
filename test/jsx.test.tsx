@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 
 describe('jsx', () => {
   it('should transform fragments', () => {
-    // deno-lint-ignore jsx-no-useless-fragment
     expect(<></>).toEqual({
       type: 'fragment',
       subelements: [],
