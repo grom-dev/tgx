@@ -1,7 +1,8 @@
 import type { TextEntity, TgxElement, TgxElementText } from './types.ts'
 
-export type TelegramMessageEntityType
-  = | 'mention'
+export interface MessageEntity {
+  type:
+    | 'mention'
     | 'hashtag'
     | 'cashtag'
     | 'bot_command'
@@ -20,37 +21,14 @@ export type TelegramMessageEntityType
     | 'text_link'
     | 'text_mention'
     | 'custom_emoji'
-
-interface TelegramMessageEntityBase {
-  type: TelegramMessageEntityType | (string & {})
+    | (string & {})
   offset: number
   length: number
-}
-
-interface TelegramMessageEntityTextLink extends TelegramMessageEntityBase {
-  type: 'text_link'
-  url: string
-}
-
-interface TelegramMessageEntityPre extends TelegramMessageEntityBase {
-  type: 'pre'
+  url?: string
   language?: string
-}
-
-interface TelegramMessageEntityCustomEmoji extends TelegramMessageEntityBase {
-  type: 'custom_emoji'
-  custom_emoji_id: string
-}
-
-interface TelegramMessageEntityFallback extends TelegramMessageEntityBase {
+  custom_emoji_id?: string
   [key: string]: unknown
 }
-
-export type TelegramMessageEntity
-  = | TelegramMessageEntityTextLink
-    | TelegramMessageEntityPre
-    | TelegramMessageEntityCustomEmoji
-    | TelegramMessageEntityFallback
 
 interface ParsedEntity {
   start: number
@@ -71,7 +49,7 @@ interface OpenEntity {
  */
 export function parseMessageEntities(
   text: string,
-  entities: readonly TelegramMessageEntity[] = [],
+  entities: readonly MessageEntity[] = [],
 ): TgxElement {
   const parsedEntities = collectValidEntities(text, entities)
   const root: TgxElement[] = []
@@ -120,7 +98,7 @@ function buildBoundaries(entities: readonly ParsedEntity[], textLength: number):
 
 function collectValidEntities(
   text: string,
-  entities: readonly TelegramMessageEntity[],
+  entities: readonly MessageEntity[],
 ): ParsedEntity[] {
   const sorted = [...entities]
     .sort((a, b) => {
@@ -166,7 +144,7 @@ function isValidRange(start: number, end: number, textLength: number): boolean {
 
 function mapEntity(
   text: string,
-  entity: TelegramMessageEntity,
+  entity: MessageEntity,
   start: number,
   end: number,
 ): TextEntity | null {
