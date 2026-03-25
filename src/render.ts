@@ -53,8 +53,9 @@ function renderTextElement(el: TgxElementText): string {
 }
 
 function renderPlainElement({ value }: TgxElementPlain): string {
-  if (value == null || typeof value === 'boolean')
+  if (value == null || typeof value === 'boolean') {
     return ''
+  }
   return sanitize(String(value))
 }
 

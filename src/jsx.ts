@@ -28,8 +28,9 @@ export function createElement(
     })
   }
 
-  if (typeof type === 'function')
+  if (typeof type === 'function') {
     return type({ ...props, children })
+  }
 
   throw new Error(`Invalid JSX component: ${type}.`)
 }
@@ -49,11 +50,13 @@ function elementsFromNode(node: TgxNode): TgxElement[] {
       return [{ type: 'plain', value: node }]
   }
 
-  if (node == null)
+  if (node == null) {
     return [{ type: 'plain', value: node }]
+  }
 
-  if (Array.isArray(node))
-    return node.flatMap(child => elementsFromNode(child))
+  if (Array.isArray(node)) {
+    return node.flatMap((child) => elementsFromNode(child))
+  }
 
   return [node]
 }

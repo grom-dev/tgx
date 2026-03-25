@@ -5,7 +5,7 @@ export default antfu({
     indent: 2,
     semi: false,
     quotes: 'single',
-    jsx: true,
+    jsx: false,
   },
   formatters: true,
   typescript: true,
@@ -15,5 +15,8 @@ export default antfu({
   rules: {
     'ts/no-empty-object-type': 'off',
     'ts/no-namespace': 'off',
+    'style/brace-style': ['error', '1tbs', { allowSingleLine: false }],
+    'style/arrow-parens': ['error', 'always'],
+    'curly': ['error', 'all'],
   },
 })
