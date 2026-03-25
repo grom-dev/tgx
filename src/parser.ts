@@ -81,7 +81,7 @@ export function parseMessageEntities(
   let cursor = 0
   for (const boundary of boundaries) {
     const chunk = text.slice(cursor, boundary)
-    if (chunk) {
+    if (chunk && !isSuppressedChunk(openStack)) {
       const target = openStack.length > 0 ? openStack.at(-1)!.node.subelements : root
       target.push({ type: 'plain', value: chunk })
     }
@@ -103,6 +103,10 @@ export function parseMessageEntities(
   }
 
   return { type: 'fragment', subelements: root }
+}
+
+function isSuppressedChunk(openStack: readonly OpenEntity[]): boolean {
+  return openStack.at(-1)?.node.entity.type === 'custom-emoji'
 }
 
 function buildBoundaries(entities: readonly ParsedEntity[], textLength: number): number[] {
