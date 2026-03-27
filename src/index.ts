@@ -1,5 +1,5 @@
 export * from './jsx.ts'
 export { Line } from './Line.ts'
-export * from './parse.ts'
-export * from './render.ts'
+export * from './parse-entities.ts'
+export * from './render-html.ts'
 export * from './types.ts'
