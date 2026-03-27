@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       marked:
-        specifier: ^17.0.5
+        specifier: 17.0.5
         version: 17.0.5
     devDependencies:
       '@antfu/eslint-config':
