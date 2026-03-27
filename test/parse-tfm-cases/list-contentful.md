@@ -1,0 +1,3 @@
+- **Quantum computing** leverages _superposition_ and `entanglement` to solve complex problems exponentially faster than [classical computers](https://en.wikipedia.org/wiki/Classical_computer)
+- The development of **CRISPR-Cas9** technology has revolutionized `genetic engineering`, enabling precise [DNA editing](https://www.genome.gov/about-genomics/policy-issues/Genome-Editing) with unprecedented accuracy
+- **Renewable energy sources** like `solar` and `wind` power are becoming increasingly cost-effective, driving the global transition away from [fossil fuels](https://www.iea.org/topics/fossil-fuels)

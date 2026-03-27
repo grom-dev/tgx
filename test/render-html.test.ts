@@ -1,6 +1,6 @@
 import type { TextEntity, TgxElement } from '../src/types.ts'
 import { describe, expect, it } from 'vitest'
-import { renderHtml } from '../src/render.ts'
+import { renderHtml } from '../src/index.ts'
 
 function plain(value: string | number | boolean | null | undefined): TgxElement {
   return { type: 'plain', value }

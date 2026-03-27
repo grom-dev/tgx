@@ -1,0 +1,3 @@
+• <b>Quantum computing</b> leverages <i>superposition</i> and <code>entanglement</code> to solve complex problems exponentially faster than <a href="https://en.wikipedia.org/wiki/Classical_computer">classical computers</a>
+• The development of <b>CRISPR-Cas9</b> technology has revolutionized <code>genetic engineering</code>, enabling precise <a href="https://www.genome.gov/about-genomics/policy-issues/Genome-Editing">DNA editing</a> with unprecedented accuracy
+• <b>Renewable energy sources</b> like <code>solar</code> and <code>wind</code> power are becoming increasingly cost-effective, driving the global transition away from <a href="https://www.iea.org/topics/fossil-fuels">fossil fuels</a>
