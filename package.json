@@ -48,6 +48,9 @@
     "deps": "taze --interactive --write --include-locked",
     "release": "bumpp"
   },
+  "dependencies": {
+    "marked": "17.0.5"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "7.4.3",
     "@types/node": "22.19.11",

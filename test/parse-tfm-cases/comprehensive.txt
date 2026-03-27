@@ -1,0 +1,25 @@
+<b>Release Notes v2.4.0</b>
+
+We're excited to announce <b>Grom 2.4.0</b> with <i>major performance improvements</i> and new features!
+
+<b>What's New</b>
+
+• <b>Real-time sync</b> now uses <code>WebSocket</code> connections instead of polling
+• Added support for <s>legacy API</s> modern <code>REST</code> endpoints
+• Integration with <a href="https://openai.com">OpenAI</a> and <a href="https://anthropic.com">Anthropic</a> APIs
+
+<b>Migration Checklist</b>
+
+☑ Update environment variables
+☑ Run database migrations
+☐ Test webhook endpoints
+☐ Deploy to production
+
+—————————
+
+<b>Code Example</b>
+
+<pre><code class="language-typescript">const client = new GromClient({ apiKey: process.env.API_KEY })
+await client.connect()</code></pre>
+
+<blockquote><b>Note:</b> Make sure to handle connection errors gracefully in production environments.</blockquote>
