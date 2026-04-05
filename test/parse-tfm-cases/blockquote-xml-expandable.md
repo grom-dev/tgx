@@ -1,0 +1,7 @@
+TFM:
+
+<blockquote expandable>
+expandable quote
+
+with 2 paragraphs
+</blockquote>

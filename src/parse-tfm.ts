@@ -8,14 +8,19 @@ import { createElement, Fragment } from './jsx.ts'
  * {@link TgxElement}.
  */
 export function parseTfm(tfm: string): TgxElement {
-  const tokens = lexer(tfm, {
-    async: false,
-    // GFM is required for strikethrough, task lists, etc.
-    gfm: true,
-    pedantic: false,
-    silent: false,
-  })
-  return Fragment({ children: renderTokens(tokens) })
+  return Fragment({ children: renderTokens(tokenize(tfm)) })
+}
+
+const LEXER_OPTIONS = {
+  async: false,
+  // GFM is required for strikethrough, task lists, etc.
+  gfm: true,
+  pedantic: false,
+  silent: false,
+} as const
+
+function tokenize(str: string): Array<Token> {
+  return lexer(str, LEXER_OPTIONS)
 }
 
 const BLOCK_TOKEN_TYPES = new Set(['heading', 'paragraph', 'list', 'code', 'blockquote', 'hr'])
@@ -26,21 +31,45 @@ function renderTokens(tokens: Array<Token>): Array<TgxNode> {
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i]!
     if (token.type === 'html') {
-      const open = parseHtmlOpenTag(token.text)
+      const open = parseHtmlOpenPrefix(token.text)
       if (!open) {
         continue
       }
-      const closeTag = `</${open.tag}>`
+      const { tag, attrs, rest } = open
+
+      // Single html token: `<tag>...</tag>` (marked often emits the whole block as one token)
+      const singleCloseMatch = rest.match(new RegExp(`^([\\s\\S]*?)</${tag}>\\s*$`, 'i'))
+      if (singleCloseMatch) {
+        if (seenBlock) {
+          result.push('\n\n')
+        } else {
+          seenBlock = true
+        }
+        result.push(
+          renderHtml(
+            tag,
+            attrs,
+            tokenize(singleCloseMatch[1]!) as Array<MarkedToken>,
+          ),
+        )
+        continue
+      }
+
       let j
       for (j = i + 1; j < tokens.length; j++) {
         const t = tokens[j]!
-        if (t.type === 'html' && t.text === closeTag) {
+        if (t.type === 'html' && t.text.trim() === `</${tag}>`) {
           break
         }
       }
       if (j < tokens.length) {
-        const innerTokens = tokens.slice(i + 1, j)
-        result.push(renderHtml(open.tag, open.attrs, innerTokens as Array<MarkedToken>))
+        if (seenBlock) {
+          result.push('\n\n')
+        } else {
+          seenBlock = true
+        }
+        const innerRaw = rest + tokens.slice(i + 1, j).map((t) => t.raw).join('')
+        result.push(renderHtml(tag, attrs, tokenize(innerRaw) as Array<MarkedToken>))
         i = j
       }
       continue
@@ -99,7 +128,6 @@ function renderToken(token: MarkedToken): TgxNode {
         if (i < token.items.length - 1) {
           nodes.push('\n')
         }
-        return nodes
       })
       return nodes
     }
@@ -111,14 +139,15 @@ function renderToken(token: MarkedToken): TgxNode {
   throw new Error(`Unexpected token of type "${token.type}".`)
 }
 
-const HTML_OPEN_TAG_RE = /^<([a-z][a-z\d]*)(\s[^>]*)?>$/i
+const HTML_OPEN_TAG_PREFIX_RE = /^<([a-z][a-z\d]*)(\s[^>]*)?>/i
 const HTML_ATTR_RE = /([a-z][a-z\d-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|(\S+)))?/gi
 
-function parseHtmlOpenTag(s: string): {
+function parseHtmlOpenPrefix(s: string): {
   tag: string
   attrs: Record<string, string | undefined>
+  rest: string
 } | null {
-  const m = s.trim().match(HTML_OPEN_TAG_RE)
+  const m = s.match(HTML_OPEN_TAG_PREFIX_RE)
   if (!m) {
     return null
   }
@@ -128,7 +157,8 @@ function parseHtmlOpenTag(s: string): {
   for (const match of attrsStr.matchAll(HTML_ATTR_RE)) {
     attrs[match[1]!] = match[2] ?? match[3] ?? match[4]
   }
-  return { tag, attrs }
+  const rest = s.slice(m[0].length)
+  return { tag, attrs, rest }
 }
 
 function renderHtml(
