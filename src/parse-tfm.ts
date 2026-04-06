@@ -8,7 +8,7 @@ import { createElement, Fragment } from './jsx.ts'
  * {@link TgxElement}.
  */
 export function parseTfm(tfm: string): TgxElement {
-  return Fragment({ children: renderTokens(tokenize(tfm)) })
+  return Fragment({ children: renderBlockTokens(tokenize(tfm)) })
 }
 
 const LEXER_OPTIONS = {
@@ -25,86 +25,136 @@ function tokenize(str: string): Array<Token> {
 
 const BLOCK_TOKEN_TYPES = new Set(['heading', 'paragraph', 'list', 'code', 'blockquote', 'hr'])
 
-function renderTokens(tokens: Array<Token>): Array<TgxNode> {
+/**
+ * Renders a block-level token stream (top-level, list item content, blockquote
+ * content). Inserts `separator` before block-type tokens when any content was
+ * already emitted — including non-block tokens like `text` (which appears
+ * before a nested `list` in tight list items).
+ *
+ * `listDepth` tracks nesting level to adjust bullet/number prefixes.
+ */
+function renderBlockTokens(tokens: Array<Token>, separator = '\n\n', listDepth = 0): Array<TgxNode> {
   const result: Array<TgxNode> = []
-  let seenBlock = false
-  for (let i = 0; i < tokens.length; i++) {
+  // Set to true for any non-space token, so that a non-block token (e.g.
+  // `text` in a tight list item) still triggers a separator before a following
+  // block token (e.g. a nested `list`).
+  let seenContent = false
+  let i = 0
+  while (i < tokens.length) {
     const token = tokens[i]!
+    if (token.type === 'space') {
+      i++
+      continue
+    }
     if (token.type === 'html') {
-      const open = parseHtmlOpenPrefix(token.text)
-      if (!open) {
-        continue
-      }
-      const { tag, attrs, rest } = open
-
-      // Single html token: `<tag>...</tag>` (marked often emits the whole block as one token)
-      const singleCloseMatch = rest.match(new RegExp(`^([\\s\\S]*?)</${tag}>\\s*$`, 'i'))
-      if (singleCloseMatch) {
-        if (seenBlock) {
-          result.push('\n\n')
-        } else {
-          seenBlock = true
+      const consumed = consumeHtmlTag(tokens, i)
+      if (consumed) {
+        if (seenContent) {
+          result.push(separator)
         }
-        result.push(
-          renderHtml(
-            tag,
-            attrs,
-            tokenize(singleCloseMatch[1]!) as Array<MarkedToken>,
-          ),
-        )
-        continue
-      }
-
-      let j
-      for (j = i + 1; j < tokens.length; j++) {
-        const t = tokens[j]!
-        if (t.type === 'html' && t.text.trim() === `</${tag}>`) {
-          break
-        }
-      }
-      if (j < tokens.length) {
-        if (seenBlock) {
-          result.push('\n\n')
-        } else {
-          seenBlock = true
-        }
-        const innerRaw = rest + tokens.slice(i + 1, j).map((t) => t.raw).join('')
-        result.push(renderHtml(tag, attrs, tokenize(innerRaw) as Array<MarkedToken>))
-        i = j
+        seenContent = true
+        result.push(renderHtmlTag(consumed.tag, consumed.attrs, consumed.innerTokens))
+        i = consumed.nextIndex
+      } else {
+        i++
       }
       continue
     }
-    if (BLOCK_TOKEN_TYPES.has(token.type)) {
-      if (seenBlock) {
-        result.push('\n\n')
-      } else {
-        seenBlock = true
-      }
+    if (BLOCK_TOKEN_TYPES.has(token.type) && seenContent) {
+      result.push(separator)
     }
-    result.push(renderToken(token as MarkedToken))
+    seenContent = true
+    result.push(renderToken(token as MarkedToken, listDepth))
+    i++
   }
   return result
 }
 
-function renderToken(token: MarkedToken): TgxNode {
+/**
+ * Renders an inline token stream (content of paragraphs, emphasis, links,
+ * etc.). Never inserts block separators.
+ */
+function renderInlineTokens(tokens: Array<Token>): Array<TgxNode> {
+  const result: Array<TgxNode> = []
+  let i = 0
+  while (i < tokens.length) {
+    const token = tokens[i]!
+    if (token.type === 'html') {
+      const consumed = consumeHtmlTag(tokens, i)
+      if (consumed) {
+        result.push(renderHtmlTag(consumed.tag, consumed.attrs, consumed.innerTokens))
+        i = consumed.nextIndex
+        continue
+      }
+    }
+    result.push(renderToken(token as MarkedToken))
+    i++
+  }
+  return result
+}
+
+/**
+ * Tries to consume a `<tag>...</tag>` HTML structure starting at index `i`.
+ * Handles both single-token (`<tag>content</tag>`) and multi-token forms where
+ * marked splits the opening tag, inner content, and closing tag separately.
+ * Returns `null` if the token at `i` is not a recognised open tag.
+ */
+function consumeHtmlTag(
+  tokens: Array<Token>,
+  i: number,
+): {
+  tag: string
+  attrs: Record<string, string | undefined>
+  innerTokens: Array<MarkedToken>
+  nextIndex: number
+} | null {
+  const token = tokens[i]
+  if (!token || token.type !== 'html') {
+    return null
+  }
+  const open = parseHtmlOpenTag(token.text)
+  if (!open) {
+    return null
+  }
+  const { tag, attrs, rest } = open
+
+  // Single token: `<tag>content</tag>`
+  const singleClose = rest.match(new RegExp(`^([\\s\\S]*?)</${tag}>\\s*$`, 'i'))
+  if (singleClose) {
+    return { tag, attrs, innerTokens: tokenize(singleClose[1]!) as Array<MarkedToken>, nextIndex: i + 1 }
+  }
+
+  // Multi-token: scan ahead for the matching closing tag
+  for (let j = i + 1; j < tokens.length; j++) {
+    const t = tokens[j]!
+    if (t.type === 'html' && t.text.trim() === `</${tag}>`) {
+      const innerRaw = rest + tokens.slice(i + 1, j).map((t) => t.raw).join('')
+      return { tag, attrs, innerTokens: tokenize(innerRaw) as Array<MarkedToken>, nextIndex: j + 1 }
+    }
+  }
+
+  return null
+}
+
+function renderToken(token: MarkedToken, listDepth = 0): TgxNode {
   switch (token.type) {
     case 'heading':
     case 'strong':
-      return createElement('b', {}, renderTokens(token.tokens))
+      return createElement('b', {}, renderInlineTokens(token.tokens))
     case 'em':
-      return createElement('i', {}, renderTokens(token.tokens))
+      return createElement('i', {}, renderInlineTokens(token.tokens))
     case 'del':
-      return createElement('s', {}, renderTokens(token.tokens))
+      return createElement('s', {}, renderInlineTokens(token.tokens))
     case 'code':
       return createElement('codeblock', { lang: token.lang }, token.text)
     case 'codespan':
       return createElement('code', {}, token.text)
     case 'link':
-      return createElement('a', { href: token.href }, renderTokens(token.tokens))
+      return createElement('a', { href: token.href }, renderInlineTokens(token.tokens))
     case 'text':
     case 'paragraph':
     case 'list_item':
-      return token.tokens ? renderTokens(token.tokens) : token.text
+      return token.tokens ? renderInlineTokens(token.tokens) : token.text
     case 'br':
       return '\n'
     case 'hr':
@@ -112,21 +162,24 @@ function renderToken(token: MarkedToken): TgxNode {
     case 'escape':
       return token.text
     case 'blockquote':
-      return createElement('blockquote', {}, renderTokens(token.tokens))
+      return createElement('blockquote', {}, renderBlockTokens(token.tokens))
     case 'image':
       return createElement('emoji', { alt: token.text, id: token.href }, null)
     case 'list': {
       const nodes: Array<TgxNode> = []
-      // TODO: handle loose lists (token.loose)
+      const indent = '  '.repeat(listDepth)
+      const bulletPrefix = `${indent}• `
+      const orderedPrefix = (i: number): string => `${indent}${i + 1}. `
+      const itemSeparator = token.loose ? '\n\n' : '\n'
       token.items.forEach((item, i) => {
         nodes.push(
           item.task
             ? '' // task items are handled by the checkbox token
-            : (token.ordered ? `${i + 1}. ` : '• '),
+            : (token.ordered ? orderedPrefix(i) : bulletPrefix),
         )
-        nodes.push(renderTokens(item.tokens))
+        nodes.push(renderBlockTokens(item.tokens, '\n', listDepth + 1))
         if (i < token.items.length - 1) {
-          nodes.push('\n')
+          nodes.push(itemSeparator)
         }
       })
       return nodes
@@ -139,40 +192,38 @@ function renderToken(token: MarkedToken): TgxNode {
   throw new Error(`Unexpected token of type "${token.type}".`)
 }
 
-const HTML_OPEN_TAG_PREFIX_RE = /^<([a-z][a-z\d]*)(\s[^>]*)?>/i
+const HTML_OPEN_TAG_RE = /^<([a-z][a-z\d]*)(\s[^>]*)?>/i
 const HTML_ATTR_RE = /([a-z][a-z\d-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|(\S+)))?/gi
 
-function parseHtmlOpenPrefix(s: string): {
+function parseHtmlOpenTag(s: string): {
   tag: string
   attrs: Record<string, string | undefined>
   rest: string
 } | null {
-  const m = s.match(HTML_OPEN_TAG_PREFIX_RE)
+  const m = s.match(HTML_OPEN_TAG_RE)
   if (!m) {
     return null
   }
   const tag = m[1]!.toLowerCase()
-  const attrsStr = m[2] ?? ''
   const attrs: Record<string, string | undefined> = {}
-  for (const match of attrsStr.matchAll(HTML_ATTR_RE)) {
+  for (const match of (m[2] ?? '').matchAll(HTML_ATTR_RE)) {
     attrs[match[1]!] = match[2] ?? match[3] ?? match[4]
   }
-  const rest = s.slice(m[0].length)
-  return { tag, attrs, rest }
+  return { tag, attrs, rest: s.slice(m[0].length) }
 }
 
-function renderHtml(
+function renderHtmlTag(
   tag: string,
   attrs: Record<string, string | undefined>,
   tokens: Array<MarkedToken>,
 ): TgxNode {
   switch (tag) {
     case 'u':
-      return createElement('u', {}, renderTokens(tokens))
+      return createElement('u', {}, renderInlineTokens(tokens))
     case 'spoiler':
-      return createElement('spoiler', {}, renderTokens(tokens))
+      return createElement('spoiler', {}, renderBlockTokens(tokens))
     case 'blockquote':
-      return createElement('blockquote', { expandable: 'expandable' in attrs }, renderTokens(tokens))
+      return createElement('blockquote', { expandable: 'expandable' in attrs }, renderBlockTokens(tokens))
     case 'time':
       return createElement(
         'time',
@@ -180,7 +231,7 @@ function renderHtml(
           unix: Number.parseInt(attrs.unix ?? ''),
           format: attrs.format as IntrinsicElements['time']['format'],
         },
-        renderTokens(tokens),
+        renderInlineTokens(tokens),
       )
   }
   throw new Error(`Unsupported HTML tag <${tag}>.`)
